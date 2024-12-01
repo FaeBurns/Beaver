@@ -12,6 +12,9 @@ public class FFMpegInit : MonoBehaviour
         File.Delete(Application.persistentDataPath + "/log.txt");
         File.WriteAllText(Application.persistentDataPath + "/log.txt", "Hello World!");
 
+        File.Delete(Application.persistentDataPath + "/testout.mp4");
+        // File.WriteAllText(Application.persistentDataPath + "/command.txt", "");
+
         try
         {
             Debug.Log(Application.persistentDataPath + "/testout.mp4");
