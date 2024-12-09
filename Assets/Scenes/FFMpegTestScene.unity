@@ -259,6 +259,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4ecdf3211a04efd9f48737d423ccead, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_targetTexture: {fileID: 0}
+  m_width: 1920
+  m_height: 1080
+  m_frameRate: 60
 --- !u!1 &1742664333
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using UnityEngine;
 
 namespace FFMpeg.Android
@@ -36,6 +37,11 @@ namespace FFMpeg.Android
 
             // this may leak session AJOs but it's not gonna be called often so it's probably fine
             s_ffmpegKitClass.CallStatic<AndroidJavaObject>("executeAsync", args, new FFMpegSessionCompleteCallbackJavaProxy(), new FFMpegLogCallbackJavaProxy(), null);
+        }
+
+        public Stream OpenStreamPipe(IPEndPoint server, int width, int height, int frameRate)
+        {
+            throw new NotImplementedException();
         }
 
         private static void ApplicationOnlogMessageReceived(string condition, string stacktrace, LogType type)
