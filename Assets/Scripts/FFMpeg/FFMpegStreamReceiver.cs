@@ -54,6 +54,9 @@ namespace FFMpeg
                 // Debug.Log(Application.persistentDataPath + "/testout.mp4");
                 // StreamToFile(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9943), Application.persistentDataPath + "/testout.mp4");
 
+                Application.targetFrameRate = m_frameRate;
+                QualitySettings.vSyncCount = 0;
+
                 PlatformFFMpegService service = new PlatformFFMpegService();
                 Stream streamInputPipe = service.OpenStreamPipe(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9943), m_width, m_height, m_frameRate);
                 m_streamToTextureHandler = new StreamToTextureHandler(streamInputPipe, m_targetTexture, m_width, m_height);

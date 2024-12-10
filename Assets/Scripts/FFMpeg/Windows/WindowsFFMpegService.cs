@@ -21,17 +21,21 @@ namespace FFMpeg.Windows
 
         public Stream OpenStreamPipe(IPEndPoint server, int width, int height, int frameRate)
         {
+            int bufferMult = 1;
+            int bufferSize = (width * height * 4) * bufferMult;
+
             string pipeName = "BeaverFromFFmpegPipe";
             NamedPipeServerStream inputPipe = new NamedPipeServerStream(pipeName,
                 PipeDirection.In,
                 1,
                 PipeTransmissionMode.Byte,
-                PipeOptions.WriteThrough, 1024, 1024); // TODO: check buffer sizes
+                PipeOptions.WriteThrough, bufferSize, bufferSize); // TODO: check buffer sizes
 
             string pipeString = @"\\.\pipe\" + pipeName;
-            string formatArgs = "-f mpegts";
-            string videoArgs = $"-framerate {frameRate} -video_size {width}x{height}";
-            string args = $"{formatArgs} -probesize 32 -fflags nobuffer -flags low_delay -i tcp://{server.Address}:{server.Port} -f rawvideo {videoArgs} {pipeString}";
+            string incomingFormat = "mpegts";
+            string protocol = "udp";
+            string outputFormat = $"-f rawvideo -pixel_format rgba -colorspace bt709 -vcodec rawvideo -r 60 -video_size {width}x{height}";
+            string args = $"-f {incomingFormat} -probesize 32 -fflags nobuffer -flags low_delay -i {protocol}://{server.Address}:{server.Port} {outputFormat} {pipeString} -y";
             // string args = $"{formatArgs} -probesize 32 -fflags nobuffer -flags low_delay -i tcp://{server.Address}:{server.Port} -f rawvideo {videoArgs} pipe:1";
 
             Debug.Log($"executing ffmpeg with args {args}");
