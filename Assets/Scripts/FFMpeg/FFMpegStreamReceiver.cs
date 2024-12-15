@@ -20,7 +20,7 @@ namespace FFMpeg
         private StreamToTextureHandler m_streamToTextureHandler;
 
         [SerializeField]
-        private RawImage m_renderTextureTarget;
+        private RenderTexture m_renderTexture;
 
         [SerializeField]
         private int m_width;
@@ -62,11 +62,7 @@ namespace FFMpeg
                 PlatformFFMpegService service = new PlatformFFMpegService();
                 Stream streamInputPipe = service.OpenStreamServer(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9943), m_width, m_height, m_frameRate);
 
-                RenderTexture renderTexture = new RenderTexture(m_width, m_height, 0, RenderTextureFormat.ARGB32);
-                renderTexture.Create();
-                m_renderTextureTarget.texture = renderTexture;
-
-                m_streamToTextureHandler = new StreamToTextureHandler(streamInputPipe, renderTexture, m_width, m_height);
+                m_streamToTextureHandler = new StreamToTextureHandler(streamInputPipe, m_renderTexture, m_width, m_height);
             }
             catch (Exception e)
             {

@@ -226,7 +226,7 @@ namespace FFMpeg
             // linear dictates the color space - linear or sRGB
             // TODO: test linear vs sRGB
             // mipcount should be 0? - only want the one texture - 1 may include an extra mip
-            Texture2D texture2D = new Texture2D(m_width, m_height, TextureFormat.ARGB32, false, true);
+            Texture2D texture2D = new Texture2D(m_width, m_height, TextureFormat.ARGB32, false, false);
             return texture2D;
         }
 
