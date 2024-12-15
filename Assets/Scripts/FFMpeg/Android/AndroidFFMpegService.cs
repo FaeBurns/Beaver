@@ -39,7 +39,7 @@ namespace FFMpeg.Android
             s_ffmpegKitClass.CallStatic<AndroidJavaObject>("executeAsync", args, new FFMpegSessionCompleteCallbackJavaProxy(), new FFMpegLogCallbackJavaProxy(), null);
         }
 
-        public Stream OpenStreamPipe(IPEndPoint server, int width, int height, int frameRate)
+        public Stream OpenStreamServer(IPEndPoint server, int width, int height, int frameRate)
         {
             throw new NotImplementedException();
         }

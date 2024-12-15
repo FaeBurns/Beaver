@@ -7,7 +7,9 @@ using System.Net;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 
 namespace FFMpeg
@@ -18,7 +20,7 @@ namespace FFMpeg
         private StreamToTextureHandler m_streamToTextureHandler;
 
         [SerializeField]
-        private RenderTexture m_targetTexture;
+        private RawImage m_renderTextureTarget;
 
         [SerializeField]
         private int m_width;
@@ -58,8 +60,13 @@ namespace FFMpeg
                 QualitySettings.vSyncCount = 0;
 
                 PlatformFFMpegService service = new PlatformFFMpegService();
-                Stream streamInputPipe = service.OpenStreamPipe(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9943), m_width, m_height, m_frameRate);
-                m_streamToTextureHandler = new StreamToTextureHandler(streamInputPipe, m_targetTexture, m_width, m_height);
+                Stream streamInputPipe = service.OpenStreamServer(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9943), m_width, m_height, m_frameRate);
+
+                RenderTexture renderTexture = new RenderTexture(m_width, m_height, 0, RenderTextureFormat.ARGB32);
+                renderTexture.Create();
+                m_renderTextureTarget.texture = renderTexture;
+
+                m_streamToTextureHandler = new StreamToTextureHandler(streamInputPipe, renderTexture, m_width, m_height);
             }
             catch (Exception e)
             {

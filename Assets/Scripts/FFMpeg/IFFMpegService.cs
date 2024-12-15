@@ -7,6 +7,6 @@ namespace FFMpeg
     {
         public void Execute(string args);
         public void ExecuteAsync(string args);
-        public Stream OpenStreamPipe(IPEndPoint server, int width, int height, int frameRate);
+        public Stream OpenStreamServer(IPEndPoint server, int width, int height, int frameRate);
     }
 }

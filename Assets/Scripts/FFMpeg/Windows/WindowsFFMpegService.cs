@@ -2,6 +2,7 @@
 using System.IO;
 using System.IO.Pipes;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using UnityEngine;
 
@@ -19,9 +20,28 @@ namespace FFMpeg.Windows
             WindowsFFMpegExec exec = new WindowsFFMpegExec(args);
         }
 
-        public Stream OpenStreamPipe(IPEndPoint server, int width, int height, int frameRate)
+        public Stream OpenStreamServer(IPEndPoint server, int width, int height, int frameRate)
         {
-            int bufferMult = 20;
+            // return OpenStreamServerSocket(server, width, height, frameRate);
+            return OpenStreamServerPipe(server, width, height, frameRate);
+        }
+
+        private Stream OpenStreamServerSocket(IPEndPoint server, int width, int height, int frameRate)
+        {
+            // port here is for the incoming stream from ffmpeg, not the stream ffmpeg is receiving
+            // server is the address that ffmpeg has to listen on
+            TcpListener listener = new TcpListener(IPAddress.Loopback, 9944);
+            listener.Start();
+            Debug.Log("stream listener started");
+            TcpClient client = listener.AcceptTcpClient();
+            Debug.Log("client connected");
+
+            return client.GetStream();
+        }
+
+        private Stream OpenStreamServerPipe(IPEndPoint server, int width, int height, int frameRate)
+        {
+            int bufferMult = 90;
             int bufferSize = (width * height * 4) * bufferMult;
 
             Debug.Log($"Allocating pipe with buffer size of {bufferSize} | mult: {bufferMult}, based on size of {width * height * 4}");

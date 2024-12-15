@@ -35,8 +35,6 @@ namespace FFMpeg
         private readonly Queue<byte[]> m_freeFramebufferQueue = new Queue<byte[]>();
         private readonly Queue<byte[]> m_readyFramebufferQueue = new Queue<byte[]>();
 
-        private bool m_hasTakenTestSnapshot = false;
-
         public StreamToTextureHandler(Stream inputStream, RenderTexture texture, int width, int height)
         {
             m_inputStream = inputStream;
@@ -60,7 +58,7 @@ namespace FFMpeg
         {
             m_frameEvent.Set();
 
-            return;
+            // return;
             // dequeue until only the most recent frame is available
             // TODO: check if this is actually beneficial?
             // may be better to leave the frames there and just consume them in a case where incoming framerate drops
@@ -77,9 +75,12 @@ namespace FFMpeg
             {
                 byte[] framebuffer = m_readyFramebufferQueue.Dequeue();
                 Texture2D uploadTarget = GetUploadTarget();
+
+
                 EmplaceBufferIntoTexture(uploadTarget, framebuffer);
 
-                Graphics.CopyTexture(uploadTarget, m_texture);
+                // Graphics.CopyTexture(uploadTarget, m_texture);
+                Graphics.Blit(uploadTarget, m_texture);
 
                 // re-add texture to free queue once done with it
                 m_freeTextureQueue.Enqueue(uploadTarget);
@@ -107,9 +108,6 @@ namespace FFMpeg
         /// <threads>Safe.</threads>
         private void ReadFrameFromStream()
         {
-            if (!(m_inputStream as NamedPipeServerStream)!.IsConnected)
-                return;
-
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             // Debug.Log("Begin Frame Get");
@@ -133,7 +131,7 @@ namespace FFMpeg
             byte[] frameBuffer = GetUnusedFrameBuffer();
             for (i = 0; i < MAX_LOOP_COUNT; i++)
             {
-                int readCount = m_inputStream.Read(frameBuffer, 0, Math.Min(frameBuffer.Length, frameBuffer.Length - readThisFrame));
+                int readCount = m_inputStream.Read(frameBuffer, readThisFrame, Math.Min(frameBuffer.Length, frameBuffer.Length - readThisFrame));
                 readThisFrame += readCount;
                 if (readThisFrame >= frameBuffer.Length)
                     break;
@@ -149,9 +147,9 @@ namespace FFMpeg
             stopwatch.Stop();
 
             // re-queue same framebuffer
-            lock (m_freeFramebufferQueue)
-                m_freeFramebufferQueue.Enqueue(frameBuffer);
-            // EnqueueFrameBuffer(frameBuffer);
+            // lock (m_freeFramebufferQueue)
+            //     m_freeFramebufferQueue.Enqueue(frameBuffer);
+            EnqueueFrameBuffer(frameBuffer);
 
             // Stopwatch gcStopwatch = Stopwatch.StartNew();
             // disable collect - allow it to be done incrementally?
