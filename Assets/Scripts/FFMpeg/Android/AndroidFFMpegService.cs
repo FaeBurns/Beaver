@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Pipes;
 using System.Net;
+using System.Net.Sockets;
+using System.Threading;
 using UnityEngine;
 
 namespace FFMpeg.Android
@@ -9,6 +12,7 @@ namespace FFMpeg.Android
     public class AndroidFFMpegService : IFFMpegService
     {
         private static readonly AndroidJavaClass s_ffmpegKitClass = new AndroidJavaClass("com.arthenica.ffmpegkit.FFmpegKit");
+        private static readonly AndroidJavaClass s_ffmpegKitConfigClass = new AndroidJavaClass("com.arthenica.ffmpegkit.FFmpegKitConfig");
 
         static AndroidFFMpegService()
         {
@@ -41,13 +45,46 @@ namespace FFMpeg.Android
 
         public Stream OpenStreamServer(IPEndPoint server, int width, int height, int frameRate)
         {
-            throw new NotImplementedException();
+            using AndroidJavaObject context = GetCurrentActivity();
+
+            // create pipe
+            // string pipeString = s_ffmpegKitConfigClass.CallStatic<string>("registerNewFFmpegPipe", context);
+
+            string pipeString = @"tcp://127.0.0.1:9944\?listen";
+            string protocol = "tcp";
+
+            string argsInput  = $"-f mpegts -probesize 8192 -fflags nobuffer -flags low_delay -i {protocol}://{server.Address}:{server.Port}";
+            string argsOutput = $"-f rawvideo -pix_fmt argb -colorspace bt709 -vcodec rawvideo -r {frameRate} -video_size {width}x{height} {pipeString} -y";
+            string args = argsInput + " " + argsOutput;
+
+            Debug.Log($"Running ffmpeg with args {args}");
+
+            s_ffmpegKitClass.CallStatic<AndroidJavaObject>("executeAsync", args, new FFMpegSessionCompleteCallbackJavaProxy(), new FFMpegLogCallbackJavaProxy(), null);
+
+            // sleep to allow tcp server to start
+            Thread.Sleep(5000);
+
+            Debug.Log("Waiting for for listener");
+            TcpClient client = new TcpClient();
+            client.Connect(new IPEndPoint(IPAddress.Loopback, 9944));
+            Debug.Log("Client accepted");
+            return client.GetStream();
+
+            // Stream stream = File.OpenRead(pipeString);
+            // return stream;
+            // return inputPipe;
         }
 
         private static void ApplicationOnlogMessageReceived(string condition, string stacktrace, LogType type)
         {
             using StreamWriter sw = new StreamWriter(Application.persistentDataPath + "/log.txt", true);
             sw.WriteLine($"[{type}] | {condition}");
+        }
+
+        private static AndroidJavaObject GetCurrentActivity()
+        {
+            using AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+            return unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
         }
     }
 }
