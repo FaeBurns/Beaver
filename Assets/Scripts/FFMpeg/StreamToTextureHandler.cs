@@ -108,6 +108,9 @@ namespace FFMpeg
         /// <threads>Safe.</threads>
         private void ReadFrameFromStream()
         {
+            if (m_inputStream is NamedPipeServerStream namedPipeServerStream && !namedPipeServerStream.IsConnected)
+                return;
+
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             // Debug.Log("Begin Frame Get");

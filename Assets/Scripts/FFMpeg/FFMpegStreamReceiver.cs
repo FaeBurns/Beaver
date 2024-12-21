@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections;
-using System.Diagnostics;
 using System.IO;
-using System.IO.Pipes;
 using System.Net;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
 using UnityEngine.Serialization;
-using UnityEngine.UI;
+using UnityEngine.XR;
 using Debug = UnityEngine.Debug;
 
 namespace FFMpeg
@@ -30,6 +26,12 @@ namespace FFMpeg
         [FormerlySerializedAs("m_framerate")]
         [SerializeField]
         private int m_frameRate;
+
+        private void Awake()
+        {
+            File.Delete(Application.persistentDataPath + "/log.txt");
+            Application.logMessageReceived += ApplicationOnlogMessageReceived;
+        }
 
         private void Start()
         {
@@ -55,9 +57,9 @@ namespace FFMpeg
             {
                 // Debug.Log(Application.persistentDataPath + "/testout.mp4");
                 // StreamToFile(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9943), Application.persistentDataPath + "/testout.mp4");
-
-                Application.targetFrameRate = m_frameRate;
                 QualitySettings.vSyncCount = 0;
+                Debug.Log($"Framerate: {Application.targetFrameRate}, Resolution: {XRSettings.eyeTextureWidth}x{XRSettings.eyeTextureHeight}");
+                Application.targetFrameRate = m_frameRate;
 
                 PlatformFFMpegService service = new PlatformFFMpegService();
                 Stream streamInputPipe = service.OpenStreamServer(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9943), m_width, m_height, m_frameRate);
@@ -82,6 +84,12 @@ namespace FFMpeg
         private void Update()
         {
             m_streamToTextureHandler?.OnUpdate();
+        }
+
+        private static void ApplicationOnlogMessageReceived(string condition, string stacktrace, LogType type)
+        {
+            using StreamWriter sw = new StreamWriter(Application.persistentDataPath + "/log.txt", true);
+            sw.WriteLine($"[{type}] | {condition}");
         }
     }
 }

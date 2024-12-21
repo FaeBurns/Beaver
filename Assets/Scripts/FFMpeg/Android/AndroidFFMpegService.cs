@@ -21,9 +21,6 @@ namespace FFMpeg.Android
             AndroidJavaClass configClass = new AndroidJavaClass("com.arthenica.ffmpegkit.FFmpegKitConfig");
             AndroidJavaObject paramVal = new AndroidJavaClass("com.arthenica.ffmpegkit.Signal").GetStatic<AndroidJavaObject>("SIGXCPU");
             configClass.CallStatic("ignoreSignal", paramVal);
-
-            File.Delete(Application.persistentDataPath + "/log.txt");
-            Application.logMessageReceived += ApplicationOnlogMessageReceived;
         }
 
         public void Execute(string args)
@@ -73,12 +70,6 @@ namespace FFMpeg.Android
             // Stream stream = File.OpenRead(pipeString);
             // return stream;
             // return inputPipe;
-        }
-
-        private static void ApplicationOnlogMessageReceived(string condition, string stacktrace, LogType type)
-        {
-            using StreamWriter sw = new StreamWriter(Application.persistentDataPath + "/log.txt", true);
-            sw.WriteLine($"[{type}] | {condition}");
         }
 
         private static AndroidJavaObject GetCurrentActivity()

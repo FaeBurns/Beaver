@@ -63,6 +63,7 @@ namespace FFMpeg.Windows
             Debug.Log($"executing ffmpeg with args {args}");
             WindowsFFMpegExec exec = new WindowsFFMpegExec(args);
             Debug.Log("Waiting for pipe connection...");
+            Thread.Sleep(5000);
             inputPipe.WaitForConnection();
             Debug.Log("Pipe connection established.");
 
