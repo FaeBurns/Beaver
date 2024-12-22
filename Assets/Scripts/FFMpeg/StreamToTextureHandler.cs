@@ -76,7 +76,6 @@ namespace FFMpeg
                 byte[] framebuffer = m_readyFramebufferQueue.Dequeue();
                 Texture2D uploadTarget = GetUploadTarget();
 
-
                 EmplaceBufferIntoTexture(uploadTarget, framebuffer);
 
                 // Graphics.CopyTexture(uploadTarget, m_texture);

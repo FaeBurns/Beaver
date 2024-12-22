@@ -364,7 +364,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_renderTextureTarget: {fileID: 859353897}
+  m_vrScreenTarget: {fileID: 1112682673}
   ResolutionMultiplier: 0.5
+--- !u!1 &1112682668 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1767192433, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+  m_PrefabInstance: {fileID: 1374521653}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1112682673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1112682668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 538d5b6978054e48b3cb3fa4861ded26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_blitEyeShader: {fileID: 4800000, guid: c046d818f17a43269d85ed9621ea1d7a, type: 3}
 --- !u!1001 &1374521653
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -421,7 +440,10 @@ PrefabInstance:
     - {fileID: 4095445705022409942, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1767192433, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1112682673}
   m_SourcePrefab: {fileID: 100100000, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
 --- !u!1 &1404650964
 GameObject:

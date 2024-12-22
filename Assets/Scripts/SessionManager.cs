@@ -16,10 +16,18 @@ public class SessionManager : MonoBehaviour
     [SerializeField]
     private RawImage m_renderTextureTarget;
 
+    [SerializeField]
+    private RenderToVrScreen m_vrScreenTarget;
+
     public float ResolutionMultiplier = 1.0f;
+
+    private readonly ClientSessionCommunicator m_session = new ClientSessionCommunicator();
 
     private async void Start()
     {
+        File.Delete(Application.persistentDataPath + "/log.txt");
+        Application.logMessageReceived += ApplicationOnlogMessageReceived;
+
         Debug.Log("Waiting for XR to start");
         // wait for xr to start
         // https://discussions.unity.com/t/how-can-i-get-actual-screen-resolution-of-vr-while-using-pc-streaming/902254/3
@@ -31,22 +39,23 @@ public class SessionManager : MonoBehaviour
         while (Application.isPlaying)
         {
             if (await BeginStream())
-                continue;
+                break;
             await Awaitable.NextFrameAsync();
         }
     }
 
     private async Task<bool> BeginStream()
     {
-        ClientSessionCommunicator session = new ClientSessionCommunicator();
-        await session.ConnectAsync(9944);
+        await m_session.ConnectAsync(9944);
 
 #if UNITY_EDITOR
         // constant for editor
         float framerate = 90;
 #else
-        Unity.XR.Oculus.Performance.TryGetDisplayRefreshRate(out float framerate);
+        float framerate = 72;
+        // Unity.XR.Oculus.Performance.TryGetDisplayRefreshRate(out float framerate);
 #endif
+        Debug.Log($"Read Target: {Application.targetFrameRate}");
 
         // multiply width by 2 to allow for both eyes
         int width = (int)(XRSettings.eyeTextureWidth * 2 * ResolutionMultiplier);
@@ -54,7 +63,7 @@ public class SessionManager : MonoBehaviour
 
         Debug.Log("[SessionManager] Negotiating connection");
         Debug.Log($"[SessionManager] Sending {width}x{height} @{framerate}");
-        if (!await session.NegotiateConnectionAsync(width, height, framerate))
+        if (!await m_session.NegotiateConnectionAsync(width, height, framerate))
         {
             Debug.Log("Failed to connect to the server");
             return false;
@@ -67,12 +76,11 @@ public class SessionManager : MonoBehaviour
         PlatformFFMpegService service = new PlatformFFMpegService();
         RenderTexture texture = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
 
-        // TODO: remove and replace with direct camera texture
-        m_renderTextureTarget.texture = texture;
+        // assign texture to screen
+        m_vrScreenTarget.SourceTexture = texture;
 
         // run ffmpeg
         Stream streamInputPipe = await service.OpenStreamServer(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9943), width, height, (int)framerate);
-
 
         // init stream handler
         m_streamToTextureHandler = new StreamToTextureHandler(streamInputPipe, texture, width, height);
@@ -83,5 +91,11 @@ public class SessionManager : MonoBehaviour
     private void Update()
     {
         m_streamToTextureHandler?.OnUpdate();
+    }
+
+    private static void ApplicationOnlogMessageReceived(string condition, string stacktrace, LogType type)
+    {
+        using StreamWriter sw = new StreamWriter(Application.persistentDataPath + "/log.txt", true);
+        sw.WriteLine($"[{type}] | {condition}");
     }
 }

@@ -48,7 +48,8 @@ namespace FFMpeg.Android
             // create pipe
             // string pipeString = s_ffmpegKitConfigClass.CallStatic<string>("registerNewFFmpegPipe", context);
 
-            string pipeString = @"tcp://127.0.0.1:9944\?listen";
+            int pipePort = 9945;
+            string pipeString = $@"tcp://127.0.0.1:{pipePort}\?listen";
             string protocol = "tcp";
 
             string argsInput  = $"-f mpegts -probesize 8192 -fflags nobuffer -flags low_delay -i {protocol}://{server.Address}:{server.Port}";
@@ -64,7 +65,7 @@ namespace FFMpeg.Android
 
             Debug.Log("Waiting for for listener");
             TcpClient client = new TcpClient();
-            client.Connect(new IPEndPoint(IPAddress.Loopback, 9944));
+            client.Connect(new IPEndPoint(IPAddress.Loopback, pipePort));
             Debug.Log("Client accepted");
             return client.GetStream();
 

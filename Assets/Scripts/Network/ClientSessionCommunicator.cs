@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Network
 {
-    public class ClientSessionCommunicator
+    public class ClientSessionCommunicator : IDisposable
     {
         private TcpClient m_client;
 
@@ -61,6 +61,11 @@ namespace Network
         private void ConnectionCheck()
         {
             if (m_client == null) throw new InvalidOperationException("Client is not connected");
+        }
+
+        public void Dispose()
+        {
+            m_client?.Dispose();
         }
     }
 }
