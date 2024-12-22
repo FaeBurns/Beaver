@@ -5,6 +5,7 @@ using System.IO.Pipes;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace FFMpeg.Android
@@ -40,7 +41,7 @@ namespace FFMpeg.Android
             s_ffmpegKitClass.CallStatic<AndroidJavaObject>("executeAsync", args, new FFMpegSessionCompleteCallbackJavaProxy(), new FFMpegLogCallbackJavaProxy(), null);
         }
 
-        public Stream OpenStreamServer(IPEndPoint server, int width, int height, int frameRate)
+        public async Task<Stream> OpenStreamServer(IPEndPoint server, int width, int height, int frameRate)
         {
             using AndroidJavaObject context = GetCurrentActivity();
 
@@ -59,7 +60,7 @@ namespace FFMpeg.Android
             s_ffmpegKitClass.CallStatic<AndroidJavaObject>("executeAsync", args, new FFMpegSessionCompleteCallbackJavaProxy(), new FFMpegLogCallbackJavaProxy(), null);
 
             // sleep to allow tcp server to start
-            Thread.Sleep(5000);
+            await Task.Delay(TimeSpan.FromSeconds(5));
 
             Debug.Log("Waiting for for listener");
             TcpClient client = new TcpClient();

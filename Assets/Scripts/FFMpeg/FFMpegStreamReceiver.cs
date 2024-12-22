@@ -62,9 +62,10 @@ namespace FFMpeg
                 Application.targetFrameRate = m_frameRate;
 
                 PlatformFFMpegService service = new PlatformFFMpegService();
-                Stream streamInputPipe = service.OpenStreamServer(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9943), m_width, m_height, m_frameRate);
+                // Stream streamInputPipe = await service.OpenStreamServer(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9943), m_width, m_height, m_frameRate);
 
-                m_streamToTextureHandler = new StreamToTextureHandler(streamInputPipe, m_renderTexture, m_width, m_height);
+                Debug.LogError("Using old reference ffmpeg init");
+                // m_streamToTextureHandler = new StreamToTextureHandler(streamInputPipe, m_renderTexture, m_width, m_height);
             }
             catch (Exception e)
             {

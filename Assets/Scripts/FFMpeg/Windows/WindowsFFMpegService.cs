@@ -4,6 +4,7 @@ using System.IO.Pipes;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace FFMpeg.Windows
@@ -20,10 +21,10 @@ namespace FFMpeg.Windows
             WindowsFFMpegExec exec = new WindowsFFMpegExec(args);
         }
 
-        public Stream OpenStreamServer(IPEndPoint server, int width, int height, int frameRate)
+        public async Task<Stream> OpenStreamServer(IPEndPoint server, int width, int height, int frameRate)
         {
             // return OpenStreamServerSocket(server, width, height, frameRate);
-            return OpenStreamServerPipe(server, width, height, frameRate);
+            return await OpenStreamServerPipe(server, width, height, frameRate);
         }
 
         private Stream OpenStreamServerSocket(IPEndPoint server, int width, int height, int frameRate)
@@ -39,7 +40,7 @@ namespace FFMpeg.Windows
             return client.GetStream();
         }
 
-        private Stream OpenStreamServerPipe(IPEndPoint server, int width, int height, int frameRate)
+        private async Task<Stream> OpenStreamServerPipe(IPEndPoint server, int width, int height, int frameRate)
         {
             int bufferMult = 5;
             int bufferSize = (width * height * 4) * bufferMult;
