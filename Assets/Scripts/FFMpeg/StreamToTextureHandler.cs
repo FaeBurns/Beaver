@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
+using System.Linq;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
@@ -27,9 +28,7 @@ namespace FFMpeg
 
         private readonly AutoResetEvent m_frameEvent = new AutoResetEvent(false);
 
-        // every time something is removed from one of these queues it must be added back to its sibling
         private readonly Queue<Texture2D> m_freeTextureQueue = new Queue<Texture2D>();
-        private readonly Queue<Texture2D> m_readyTextureQueue = new Queue<Texture2D>();
 
         // every time something is removed from one of these queues it must be added back to its sibling
         private readonly Queue<byte[]> m_freeFramebufferQueue = new Queue<byte[]>();
@@ -245,6 +244,19 @@ namespace FFMpeg
             texture2D.LoadRawTextureData(framebuffer);
             // TODO: check makeNoLongerReadable - it may have an impact on writing later - no need to copy the data?
             texture2D.Apply(false, false);
+
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                using FileStream file = File.OpenWrite($"{Guid.NewGuid()}.png");
+                Debug.LogWarning($"Writing to png at {file.Name}");
+                byte[] pngBytes = texture2D.EncodeToPNG();
+                file.Write(pngBytes);
+
+                int whitePixels = texture2D.GetPixels32().Count(p => p.a > 0);
+                int blackPixels = texture2D.GetPixels32().Count(p => p.a == 0);
+                Debug.LogWarning($"Incoming texture had {whitePixels} non black alpha pixels, with {blackPixels} black pixels");
+            }
 
             stopwatch.Stop();
             // Debug.Log($"{nameof(EmplaceBufferIntoTexture)} took {stopwatch.Elapsed.TotalMilliseconds:N0} ms");

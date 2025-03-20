@@ -14,9 +14,6 @@ public class SessionManager : MonoBehaviour
     private StreamToTextureHandler m_streamToTextureHandler;
 
     [SerializeField]
-    private RawImage m_renderTextureTarget;
-
-    [SerializeField]
     private RenderToVrScreen m_vrScreenTarget;
 
     public float ResolutionMultiplier = 1.0f;
@@ -74,7 +71,7 @@ public class SessionManager : MonoBehaviour
         // create platform service and render texture
         // render texture should automatically be disposed of when play ends
         PlatformFFMpegService service = new PlatformFFMpegService();
-        RenderTexture texture = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.ARGB32);
+        RenderTexture texture = new RenderTexture(width, height, 32, RenderTextureFormat.ARGB32);
 
         // assign texture to screen
         m_vrScreenTarget.SourceTexture = texture;

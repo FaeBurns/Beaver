@@ -363,7 +363,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f5fa21e08c846b1b3dfdc2d9ed72e31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_renderTextureTarget: {fileID: 859353897}
   m_vrScreenTarget: {fileID: 1112682673}
   ResolutionMultiplier: 0.5
 --- !u!1 &1112682668 stripped
@@ -384,6 +383,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_blitEyeShader: {fileID: 4800000, guid: c046d818f17a43269d85ed9621ea1d7a, type: 3}
+  m_debugRenderTexture: {fileID: 8400000, guid: 30f0fc00fa5ee114c8c58164fb396c20, type: 2}
 --- !u!1001 &1374521653
 PrefabInstance:
   m_ObjectHideFlags: 0
