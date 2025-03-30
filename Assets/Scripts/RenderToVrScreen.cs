@@ -4,6 +4,7 @@ public class RenderToVrScreen : MonoBehaviour
 {
     private static readonly int s_eyeIndex = Shader.PropertyToID("_eyeIndex");
     private Camera m_camera = null!;
+    private RenderTexture m_effectTexture = null!;
 
     public RenderTexture SourceTexture { get; set; } = null;
 
@@ -12,6 +13,9 @@ public class RenderToVrScreen : MonoBehaviour
 
     [SerializeField]
     private RenderTexture m_debugRenderTexture;
+
+    [SerializeField]
+    private PostProcessingEffectScheduler m_postProcessingScheduler;
 
     private Material m_blitEyeMaterial = null!;
 
@@ -36,18 +40,26 @@ public class RenderToVrScreen : MonoBehaviour
             // write to debug texture
             if (m_debugRenderTexture != null)
                 Graphics.Blit(SourceTexture, m_debugRenderTexture);
+
+            // it's apparently better to create a new temporary texture each time than using the same one
+            RenderTextureDescriptor descriptor = destination.descriptor;
+            descriptor.width *= 2; // double width as destination is for one eye not both
+            m_effectTexture = RenderTexture.GetTemporary(descriptor);
+
+            // render the post-processing effects
+            m_postProcessingScheduler.Render(SourceTexture, m_effectTexture);
         }
 
         if (m_camera.stereoActiveEye == Camera.MonoOrStereoscopicEye.Left)
         {
             m_blitEyeMaterial.SetInteger(s_eyeIndex, 0);
-            Graphics.Blit(SourceTexture, destination, m_blitEyeMaterial);
+            Graphics.Blit(m_effectTexture, destination, m_blitEyeMaterial);
             m_leftEyeRenderCount++;
         }
         else if (m_camera.stereoActiveEye == Camera.MonoOrStereoscopicEye.Right)
         {
             m_blitEyeMaterial.SetInteger(s_eyeIndex, 1);
-            Graphics.Blit(SourceTexture, destination, m_blitEyeMaterial);
+            Graphics.Blit(m_effectTexture, destination, m_blitEyeMaterial);
             m_rightEyeRenderCount++;
         }
         else
@@ -63,6 +75,8 @@ public class RenderToVrScreen : MonoBehaviour
 
             m_leftEyeRenderCount = 0;
             m_rightEyeRenderCount = 0;
+
+            RenderTexture.ReleaseTemporary(m_effectTexture);
         }
     }
 }
