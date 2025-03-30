@@ -49,7 +49,7 @@ Shader "TextMeshPro/Sprite"
 		{
             Name "Default"
 		CGPROGRAM
-			#pragma vertex vert
+			#pragma vertex Vert
 			#pragma fragment frag
             #pragma target 2.0
 
@@ -67,7 +67,7 @@ Shader "TextMeshPro/Sprite"
                 UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
-			struct v2f
+			struct V2F
 			{
 				float4 vertex			: SV_POSITION;
 				fixed4 color			: COLOR;
@@ -86,9 +86,9 @@ Shader "TextMeshPro/Sprite"
             float _UIMaskSoftnessY;
             int _UIVertexColorAlwaysGammaSpace;
 
-            v2f vert(appdata_t v)
+            V2F Vert(appdata_t v)
 			{
-				v2f OUT;
+				V2F OUT;
                 UNITY_SETUP_INSTANCE_ID(v);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
 				float4 vPosition = UnityObjectToClipPos(v.vertex);
@@ -110,7 +110,7 @@ Shader "TextMeshPro/Sprite"
 				return OUT;
 			}
 
-			fixed4 frag(v2f IN) : SV_Target
+			fixed4 frag(V2F IN) : SV_Target
 			{
 				half4 color = (tex2D(_MainTex, IN.texcoord) + _TextureSampleAdd) * IN.color;
 

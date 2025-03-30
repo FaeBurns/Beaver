@@ -18,6 +18,9 @@ public class PostProcessingEffectSource : MonoBehaviour
     private Shader m_shader;
 
     [SerializeField]
+    private int m_shaderPasses = 1;
+
+    [SerializeField]
     private PostProcessingEffectParameter[] m_defaultParameters = Array.Empty<PostProcessingEffectParameter>();
 
     [SerializeField]
@@ -33,7 +36,23 @@ public class PostProcessingEffectSource : MonoBehaviour
     public void Render(RenderTexture source, RenderTexture destination)
     {
         ApplyCurrentParameters();
-        Graphics.Blit(source, destination, m_material);
+        Stack<RenderTexture> temporaryTextures = new Stack<RenderTexture>();
+        temporaryTextures.Push(source);
+        for (int i = 0; i < m_shaderPasses; i++)
+        {
+            RenderTexture target = RenderTexture.GetTemporary(source.descriptor);
+            Graphics.Blit(temporaryTextures.Peek(), target, m_material, i); // i = pass
+
+            temporaryTextures.Push(target);
+        }
+
+        Graphics.Blit(temporaryTextures.Peek(), destination);
+
+        // don't release the last one as that's the source
+        while (temporaryTextures.Count > 1)
+        {
+            RenderTexture.ReleaseTemporary(temporaryTextures.Pop());
+        }
     }
 
     public void AdvanceEffect()

@@ -17,21 +17,21 @@
 
             #include "UnityCG.cginc"
 
-            struct appdata
+            struct Appdata
             {
                 float4 vertex : POSITION;
                 float2 uv : TEXCOORD0;
             };
 
-            struct v2f
+            struct V2F
             {
                 float2 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
             };
 
-            v2f vert(appdata v)
+            V2F vert(Appdata v)
             {
-                v2f o;
+                V2F o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = v.uv;
                 return o;
@@ -40,7 +40,7 @@
             sampler2D _MainTex;
             int _eyeIndex;
 
-            fixed4 frag(v2f i) : SV_Target
+            fixed4 frag(V2F i) : SV_Target
             {
                 // texture output from ffmpeg is vertically inverted so un-invert here
                 i.uv.y = 1 - i.uv.y;

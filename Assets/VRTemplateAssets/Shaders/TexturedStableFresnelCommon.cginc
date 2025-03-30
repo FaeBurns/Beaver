@@ -26,7 +26,7 @@ struct fresnel_vertex
     UNITY_VERTEX_OUTPUT_STEREO
 };
 
-fresnel_vertex vert(appdata_fresnel v)
+fresnel_vertex Vert(appdata_fresnel v)
 {
     fresnel_vertex o;
     UNITY_SETUP_INSTANCE_ID(v);

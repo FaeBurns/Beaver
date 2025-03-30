@@ -18,15 +18,15 @@ Shader "Unlit/Grid"
         Pass
         {
             CGPROGRAM
-            #pragma vertex vert
+            #pragma vertex Vert
             #pragma fragment frag
             #include "UnityCG.cginc"
-            struct appdata
+            struct Appdata
             {
                 float4 vertex : POSITION;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
-            struct v2f
+            struct V2F
             {
                 float4 vertex : SV_POSITION;
                 float2 uv : TEXCOORD0;
@@ -41,9 +41,9 @@ Shader "Unlit/Grid"
             float _ODistance;
             float _TDistance;
 
-            v2f vert (appdata_full v)
+            V2F Vert (appdata_full v)
             {
-                v2f o;
+                V2F o;
                 UNITY_SETUP_INSTANCE_ID(v);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
                 o.vertex = UnityObjectToClipPos(v.vertex);
@@ -52,7 +52,7 @@ Shader "Unlit/Grid"
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            fixed4 frag (V2F i) : SV_Target
             {
                 float2 wrapped = frac(i.uv) - 0.5f;
                 float2 range = abs(wrapped);

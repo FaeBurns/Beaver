@@ -16,7 +16,9 @@ public class PostProcessingEffectScheduler : MonoBehaviour
         {
             // if we need to use the destination, use the destination
             if (useDestination)
-                return RenderTexture.GetTemporary(destination.descriptor);
+                // use source if destination is null
+                // destination will be null if it's outputting to the screen
+                return RenderTexture.GetTemporary(destination?.descriptor ?? source.descriptor);
 
             // if there are no previous effects to get the texture from just use the source
             if (temporaryRenderTextures.Count == 0)

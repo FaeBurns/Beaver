@@ -16,14 +16,14 @@ Shader "Skybox/Horizontal Skybox"
 
     #include "UnityCG.cginc"
 
-    struct appdata
+    struct Appdata
     {
         float4 position : POSITION;
         float3 texcoord : TEXCOORD0;
         UNITY_VERTEX_INPUT_INSTANCE_ID
     };
 
-    struct v2f
+    struct V2F
     {
         float4 position : SV_POSITION;
         float3 texcoord : TEXCOORD0;
@@ -38,9 +38,9 @@ Shader "Skybox/Horizontal Skybox"
     half _Exponent2;
     half4 _MainTex_ST;
 
-    v2f vert (appdata v)
+    V2F vert (Appdata v)
     {
-        v2f o;
+        V2F o;
         UNITY_SETUP_INSTANCE_ID(v);
         UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
         o.position = UnityObjectToClipPos (v.position);
@@ -48,7 +48,7 @@ Shader "Skybox/Horizontal Skybox"
         return o;
     }
 
-    half4 frag (v2f i) : COLOR
+    half4 frag (V2F i) : COLOR
     {
         float p = normalize (i.texcoord).y;
         float p1 = 1.0f - pow (min (1.0f, 1.0f - p), _Exponent1);

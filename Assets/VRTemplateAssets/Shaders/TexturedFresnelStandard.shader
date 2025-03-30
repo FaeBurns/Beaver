@@ -33,7 +33,7 @@ Shader "SpatialFramework/Textured Fresnel/Standard"
 
             CGPROGRAM
 
-                #pragma vertex vert
+                #pragma vertex Vert
                 #pragma fragment fragEmpty
 
                 #include "UnityCG.cginc"
@@ -62,7 +62,7 @@ Shader "SpatialFramework/Textured Fresnel/Standard"
 
             CGPROGRAM
 
-                #pragma vertex vert
+                #pragma vertex Vert
                 #pragma fragment fragEmpty
 
                 #include "UnityCG.cginc"
@@ -89,7 +89,7 @@ Shader "SpatialFramework/Textured Fresnel/Standard"
 
             CGPROGRAM
 
-                #pragma vertex vert
+                #pragma vertex Vert
                 #pragma fragment fragRimShader
 
                 #include "UnityCG.cginc"

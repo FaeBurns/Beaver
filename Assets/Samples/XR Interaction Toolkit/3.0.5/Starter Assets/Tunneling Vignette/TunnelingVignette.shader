@@ -24,7 +24,7 @@ Shader "VR/TunnelingVignette"
 
             #include "UnityCG.cginc"
 
-            struct appdata
+            struct Appdata
             {
                 float4 vertex : POSITION;
                 float2 uv : TEXCOORD0;
@@ -32,7 +32,7 @@ Shader "VR/TunnelingVignette"
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            struct v2f
+            struct V2F
             {
                 float2 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
@@ -45,12 +45,12 @@ Shader "VR/TunnelingVignette"
             float _ApertureSize;
             float _FeatheringEffect;
 
-            v2f vert(appdata v)
+            V2F vert(Appdata v)
             {
-                v2f o;
+                V2F o;
 
                 UNITY_SETUP_INSTANCE_ID(v);
-                UNITY_INITIALIZE_OUTPUT(v2f, o);
+                UNITY_INITIALIZE_OUTPUT(V2F, o);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
                 o.vertex = UnityObjectToClipPos(v.vertex);
@@ -60,7 +60,7 @@ Shader "VR/TunnelingVignette"
 
             UNITY_DECLARE_SCREENSPACE_TEXTURE(_MainTex);
 
-            fixed4 frag(v2f i) : SV_Target
+            fixed4 frag(V2F i) : SV_Target
             {
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
 

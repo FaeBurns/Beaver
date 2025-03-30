@@ -27,7 +27,7 @@ Shader "SpatialFramework/FauxBackgroundOverlayBlurURP"
             Tags { "LightMode" = "UniversalForward" }
 
             HLSLPROGRAM
-            #pragma vertex vert
+            #pragma vertex Vert
             #pragma fragment frag
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -50,7 +50,7 @@ Shader "SpatialFramework/FauxBackgroundOverlayBlurURP"
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            struct v2f
+            struct V2F
             {
                 half4 position : POSITION;
                 half3 worldPos : TEXCOORD0;
@@ -58,9 +58,9 @@ Shader "SpatialFramework/FauxBackgroundOverlayBlurURP"
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
-            v2f vert(appdata_t v)
+            V2F Vert(appdata_t v)
             {
-                v2f output;
+                V2F output;
                 UNITY_SETUP_INSTANCE_ID(v);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
@@ -71,7 +71,7 @@ Shader "SpatialFramework/FauxBackgroundOverlayBlurURP"
                 return output;
             }
 
-            half4 frag(v2f input) : SV_Target
+            half4 frag(V2F input) : SV_Target
             {
                 half2 uvPos = abs(input.cleanUV - float2(0.5, 0.5));
                 half uvMax = max(uvPos.x, uvPos.y);
@@ -98,7 +98,7 @@ Shader "SpatialFramework/FauxBackgroundOverlayBlurURP"
         Pass
         {
             CGPROGRAM
-            #pragma vertex vert
+            #pragma vertex Vert
             #pragma fragment frag
             #include "UnityCG.cginc"
 
@@ -115,7 +115,7 @@ Shader "SpatialFramework/FauxBackgroundOverlayBlurURP"
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            struct v2f
+            struct V2F
             {
                 half4 position : POSITION;
                 half3 worldPos : TEXCOORD0;
@@ -123,9 +123,9 @@ Shader "SpatialFramework/FauxBackgroundOverlayBlurURP"
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
-            v2f vert(appdata_t v)
+            V2F Vert(appdata_t v)
             {
-                v2f output;
+                V2F output;
                 UNITY_SETUP_INSTANCE_ID(v);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
@@ -136,7 +136,7 @@ Shader "SpatialFramework/FauxBackgroundOverlayBlurURP"
                 return output;
             }
 
-            fixed4 frag(v2f input) : SV_Target
+            fixed4 frag(V2F input) : SV_Target
             {
                 half2 uvPos = abs(input.cleanUV - float2(0.5, 0.5));
                 half uvMax = max(uvPos.x, uvPos.y);
