@@ -118,6 +118,52 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &7386788
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7386790}
+  - component: {fileID: 7386789}
+  m_Layer: 0
+  m_Name: Tests
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &7386789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7386788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8d9c6072328465aaf69a00d4f915140, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RootDirectoryName: Tests_Beaver
+  TestFolderName: TestHeadsetAAOn
+--- !u!4 &7386790
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7386788}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &257024121
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,6 +295,7 @@ MonoBehaviour:
   m_shaderPasses: 1
   m_defaultParameters: []
   m_effects: []
+  m_logName: ColorInvert
 --- !u!4 &298522224
 Transform:
   m_ObjectHideFlags: 0
@@ -294,6 +341,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1654335761}
+  - {fileID: 2066366333}
   - {fileID: 298522224}
   - {fileID: 406960844}
   m_Father: {fileID: 1775709805}
@@ -371,6 +419,7 @@ MonoBehaviour:
     FloatValue: 0.75
     ColorValue: {r: 0, g: 0, b: 0, a: 0}
   m_effects: []
+  m_logName: FXAA
 --- !u!1 &546309002
 GameObject:
   m_ObjectHideFlags: 0
@@ -866,6 +915,7 @@ MonoBehaviour:
   m_shaderPasses: 1
   m_defaultParameters: []
   m_effects: []
+  m_logName: RemapVertical
 --- !u!1 &1775709801
 GameObject:
   m_ObjectHideFlags: 0
@@ -954,7 +1004,7 @@ Camera:
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 1
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
@@ -990,6 +1040,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_sources:
   - {fileID: 1654335762}
+  - {fileID: 2066366334}
   - {fileID: 298522223}
   - {fileID: 406960845}
 --- !u!1 &1975774383
@@ -1071,6 +1122,62 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2066366332
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2066366333}
+  - component: {fileID: 2066366334}
+  m_Layer: 0
+  m_Name: FakeWork
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &2066366333
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2066366332}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 326086276}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2066366334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2066366332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e458019cf380489ab2c8e59776264d4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UseFullResolutionTarget: 0
+  m_shader: {fileID: 4800000, guid: 91f420fc50094893bb21926509e871a2, type: 3}
+  m_shaderPasses: 1
+  m_defaultParameters:
+  - Type: 1
+    Name: _LoopCount
+    FlagValue: 0
+    IntValue: 0
+    FloatValue: 0
+    ColorValue: {r: 0, g: 0, b: 0, a: 0}
+  m_effects: []
+  m_logName: Fake Work
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1082,3 +1189,4 @@ SceneRoots:
   - {fileID: 546309003}
   - {fileID: 1374521653}
   - {fileID: 1775709805}
+  - {fileID: 7386790}

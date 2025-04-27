@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using Testing;
 using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
 using UnityEngine.Serialization;
+using Debug = UnityEngine.Debug;
 
 public class PostProcessingEffectSource : MonoBehaviour
 {
@@ -26,6 +29,9 @@ public class PostProcessingEffectSource : MonoBehaviour
     [SerializeField]
     private PostProcessingEffect[] m_effects = Array.Empty<PostProcessingEffect>();
 
+    [SerializeField]
+    private string m_logName = "unnamed";
+
     private int m_activeEffectIndex = 0;
 
     private void OnEnable()
@@ -33,31 +39,29 @@ public class PostProcessingEffectSource : MonoBehaviour
         m_material = new Material(m_shader);
     }
 
-    public void Render(RenderTexture source, RenderTexture destination)
+    public void Render(CommandBuffer buffer, RenderTexture source, RenderTexture destination)
     {
         ApplyCurrentParameters();
+        int monitor = Tester.BeginTimeMonitor(buffer, $"PP_{m_logName}");
         Stack<RenderTexture> temporaryTextures = new Stack<RenderTexture>();
         temporaryTextures.Push(source);
         for (int i = 0; i < m_shaderPasses; i++)
         {
             RenderTexture target = RenderTexture.GetTemporary(source.descriptor);
-            Graphics.Blit(temporaryTextures.Peek(), target, m_material, i); // i = pass
+            buffer.Blit(temporaryTextures.Peek(), target, m_material, i); // i = pass
 
             temporaryTextures.Push(target);
         }
 
-        Graphics.Blit(temporaryTextures.Peek(), destination);
+        buffer.Blit(temporaryTextures.Peek(), destination);
 
         // don't release the last one as that's the source
         while (temporaryTextures.Count > 1)
         {
             RenderTexture.ReleaseTemporary(temporaryTextures.Pop());
         }
-    }
 
-    public void AdvanceEffect()
-    {
-        m_activeEffectIndex = (m_activeEffectIndex + 1) % m_effects.Length;
+        Tester.EndTimeMonitor(buffer, monitor);
     }
 
     private IEnumerable<PostProcessingEffectParameter> GetActiveEffectParameters()

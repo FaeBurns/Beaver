@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Testing;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -10,6 +12,10 @@ public class PostProcessingEffectScheduler : MonoBehaviour
 
     public void Render(RenderTexture source, RenderTexture destination)
     {
+        CommandBuffer buffer = new CommandBuffer();
+        buffer.name = "PostProcessing";
+        int globalMonitor = Tester.BeginTimeMonitor(buffer, "PostProcessingGlobalTime");
+
         Stack<RenderTexture> temporaryRenderTextures = new Stack<RenderTexture>();
 
         RenderTexture GetTemporaryTexture(bool useDestination)
@@ -39,7 +45,7 @@ public class PostProcessingEffectScheduler : MonoBehaviour
             RenderTexture targetTexture = GetTemporaryTexture(effect.UseFullResolutionTarget);
 
             // render from source to target
-            effect.Render(effectSource, targetTexture);
+            effect.Render(buffer, effectSource, targetTexture);
 
             // remember temporary texture
             temporaryRenderTextures.Push(targetTexture);
@@ -47,15 +53,20 @@ public class PostProcessingEffectScheduler : MonoBehaviour
 
         // if there were any effects created, blit from it to the destination
         if (temporaryRenderTextures.Any())
-            Graphics.Blit(temporaryRenderTextures.Peek(), destination);
+            buffer.Blit(temporaryRenderTextures.Peek(), destination);
         // otherwise just blit from source to dest
         else
-            Graphics.Blit(source, destination);
+            buffer.Blit(source, destination);
 
         // release all temporary textures
         while (temporaryRenderTextures.Any())
         {
             RenderTexture.ReleaseTemporary(temporaryRenderTextures.Pop());
         }
+
+        Tester.EndTimeMonitor(buffer, globalMonitor);
+        Debug.Log("Beaver::PPSchedule::Executing Command Buffer");
+        Graphics.ExecuteCommandBuffer(buffer);
+        Debug.Log("Beaver::PPSchedule::Command Buffer Executed");
     }
 }
