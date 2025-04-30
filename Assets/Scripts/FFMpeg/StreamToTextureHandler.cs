@@ -159,7 +159,8 @@ namespace FFMpeg
             // gcStopwatch.Stop();
             // Debug.Log($"GC took {gcStopwatch.Elapsed.TotalMilliseconds} ms");
 
-            Debug.Log($"Frame occured reading {readThisFrame} / {frameBuffer.Length} taking {i} loops and {stopwatch.Elapsed.TotalMilliseconds} ms");
+            // disable log spam
+            // Debug.Log($"Frame occured reading {readThisFrame} / {frameBuffer.Length} taking {i} loops and {stopwatch.Elapsed.TotalMilliseconds} ms");
         }
 
         /// <summary>

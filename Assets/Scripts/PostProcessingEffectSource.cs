@@ -23,16 +23,12 @@ public class PostProcessingEffectSource : MonoBehaviour
     [SerializeField]
     private int m_shaderPasses = 1;
 
+    [FormerlySerializedAs("m_defaultParameters")]
     [SerializeField]
-    private PostProcessingEffectParameter[] m_defaultParameters = Array.Empty<PostProcessingEffectParameter>();
-
-    [SerializeField]
-    private PostProcessingEffect[] m_effects = Array.Empty<PostProcessingEffect>();
+    public PostProcessingEffectParameter[] Parameters = Array.Empty<PostProcessingEffectParameter>();
 
     [SerializeField]
     private string m_logName = "unnamed";
-
-    private int m_activeEffectIndex = 0;
 
     private void OnEnable()
     {
@@ -64,29 +60,10 @@ public class PostProcessingEffectSource : MonoBehaviour
         Tester.EndTimeMonitor(buffer, monitor);
     }
 
-    private IEnumerable<PostProcessingEffectParameter> GetActiveEffectParameters()
-    {
-        if (m_effects.Length == 0)
-            return Enumerable.Empty<PostProcessingEffectParameter>();
-
-        return m_effects[m_activeEffectIndex].Parameters;
-    }
-
     private void ApplyCurrentParameters()
     {
-        HashSet<string> visitedNames = new HashSet<string>();
-        foreach (PostProcessingEffectParameter parameter in GetActiveEffectParameters())
+        foreach (PostProcessingEffectParameter defaultParameter in Parameters)
         {
-            visitedNames.Add(parameter.Name);
-
-            ApplyParameter(parameter);
-        }
-
-        foreach (PostProcessingEffectParameter defaultParameter in m_defaultParameters)
-        {
-            if (visitedNames.Contains(defaultParameter.Name))
-                continue;
-
             ApplyParameter(defaultParameter);
         }
     }

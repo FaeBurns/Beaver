@@ -11,7 +11,12 @@ namespace Testing
         private static readonly Dictionary<int, string> s_idToNameMap = new Dictionary<int, string>();
         private static int s_nextId = 0;
 
+        #if UNITY_EDITOR
         private const string DLL = "gpu_timer";
+        #elif UNITY_ANDROID
+        // android packages into one file so it needs to be internalized
+        private const string DLL = "gpu_timer";
+        #endif
 
         [DllImport(DLL)] public static extern bool InitGpuTimer();
         [DllImport(DLL)] public static extern ulong GetElapsedNanosecondsForId(int id);

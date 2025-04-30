@@ -49,14 +49,17 @@ public class SessionManager : MonoBehaviour
         // constant for editor
         float framerate = 90;
 #else
-        float framerate = 72;
+        // float framerate = 72;
         // Unity.XR.Oculus.Performance.TryGetDisplayRefreshRate(out float framerate);
+        float framerate = 90;
 #endif
         Debug.Log($"Read Target: {Application.targetFrameRate}");
 
         // multiply width by 2 to allow for both eyes
         int width = (int)(XRSettings.eyeTextureWidth * 2 * ResolutionMultiplier);
         int height = (int)(XRSettings.eyeTextureHeight * ResolutionMultiplier);
+
+        Application.targetFrameRate = (int)framerate;
 
         Debug.Log("[SessionManager] Negotiating connection");
         Debug.Log($"[SessionManager] Sending {width}x{height} @{framerate}");

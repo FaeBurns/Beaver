@@ -94,35 +94,41 @@ extern "C" void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API UnityPluginUnload()
 
 extern "C" bool UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API InitGpuTimer()
 {
-	LogUnity("Beaver::TryInitGpuTimer::1");
-    // if state is invalid then fail
-    if (!s_UnityVulkan || s_QueryPool != VK_NULL_HANDLE) return false;
+	// if state is invalid then fail
+    if (!s_UnityVulkan)
+    {
+        UNITY_LOG_ERROR(s_UnityLog, "Beaver::TryInitGpuTimer UnityVulkan instance not set");
+        return false;
+    }
+    if (s_QueryPool != VK_NULL_HANDLE)
+    {
+        UNITY_LOG_WARNING(s_UnityLog, "Beaver::TryInitGpuTimer query pool already initialized");
+        return true;
+    }
 
     // get vulkan device
-	LogUnity("Beaver::TryInitGpuTimer::2");	
     UnityVulkanInstance vkInstance = s_UnityVulkan->Instance();
-	LogUnity("Beaver::TryInitGpuTimer::3");
     s_Device = vkInstance.device;
-	LogUnity("Beaver::TryInitGpuTimer::4");
 	if (!s_Device)
+    {
+        UNITY_LOG_ERROR(s_UnityLog, "Beaver::TryInitGpuTimer Failed to get vk device");
 		return false;
+    }
 
-	LogUnity("Beaver::TryInitGpuTimer::5");
-    VkQueryPoolCreateInfo queryInfo = {};
+	VkQueryPoolCreateInfo queryInfo = {};
     queryInfo.sType = VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO;
     queryInfo.queryType = VK_QUERY_TYPE_TIMESTAMP;
     queryInfo.queryCount = MAX_TIMERS * 2;
 
-	LogUnity("Beaver::TryInitGpuTimer::6");
-    auto result = vkCreateQueryPool(s_Device, &queryInfo, nullptr, &s_QueryPool);
-	LogUnity("Beaver::TryInitGpuTimer::7");
+	auto result = vkCreateQueryPool(s_Device, &queryInfo, nullptr, &s_QueryPool);
 	if (result != VK_SUCCESS)
     {
-        LogUnity("Beaver::TryInitGpuTimer::Failed to create query pool\n");
+        UNITY_LOG_ERROR(s_UnityLog, "Beaver::TryInitGpuTimer Failed to create query pool");
 		return false;
     }
 	else{
-        LogUnity("Beaver::TryInitGpuTimer::Successfully created query pool\n");
+        // use direct to bypass log disable
+        UNITY_LOG(s_UnityLog, "Beaver::TryInitGpuTimer::Successfully created query pool");
 	}
 	return true;
 }

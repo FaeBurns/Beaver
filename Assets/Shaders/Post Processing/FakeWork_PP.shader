@@ -1,4 +1,4 @@
-Shader "Hidden/ColorRemapPP"
+Shader "Hidden/FakeWorkPP"
 {
     Properties
     {

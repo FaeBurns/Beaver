@@ -65,8 +65,6 @@ public class PostProcessingEffectScheduler : MonoBehaviour
         }
 
         Tester.EndTimeMonitor(buffer, globalMonitor);
-        Debug.Log("Beaver::PPSchedule::Executing Command Buffer");
         Graphics.ExecuteCommandBuffer(buffer);
-        Debug.Log("Beaver::PPSchedule::Command Buffer Executed");
     }
 }
