@@ -53,7 +53,7 @@ namespace FFMpeg.Android
             string protocol = "tcp";
 
             string argsInput  = $"-f mpegts -probesize 8192 -fflags nobuffer -flags low_delay -i {protocol}://{server.Address}:{server.Port}";
-            string argsOutput = $"-f rawvideo -pix_fmt argb -colorspace bt709 -vcodec rawvideo -r {frameRate} -video_size {width}x{height} {pipeString} -y";
+            string argsOutput = $"-f rawvideo -pix_fmt argb -colorspace bt709 -vcodec rawvideo -r {frameRate} -video_size {width}x{height} -sws_flags neighbor {pipeString} -y";
             string args = argsInput + " " + argsOutput;
 
             Debug.Log($"Running ffmpeg with args {args}");

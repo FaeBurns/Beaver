@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using FFMpeg;
@@ -24,6 +25,10 @@ public class SessionManager : MonoBehaviour
     {
         File.Delete(Application.persistentDataPath + "/log.txt");
         Application.logMessageReceived += ApplicationOnlogMessageReceived;
+
+        string resPath = Path.Combine(Application.persistentDataPath, "res.txt");
+        if (File.Exists(resPath))
+            ResolutionMultiplier = Single.Parse(await File.ReadAllTextAsync(resPath));
 
         Debug.Log("Waiting for XR to start");
         // wait for xr to start

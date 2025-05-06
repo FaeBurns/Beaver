@@ -11,6 +11,7 @@ namespace Testing
         [SerializeField] private PostProcessingEffectSource m_fxaaEffect;
         [SerializeField] private PostProcessingEffectSource m_colorChangeEffect;
         [SerializeField] private PostProcessingEffectSource m_fakeWorkEffect;
+        [SerializeField] private PostProcessingEffectSource m_blankEffect;
 
         public IEnumerator ExecuteTests()
         {
@@ -68,6 +69,13 @@ namespace Testing
         private IEnumerator WaitForCompletion()
         {
             yield return new WaitForSeconds(m_testLengthSeconds);
+        }
+
+        private IEnumerator MarkBeginning()
+        {
+            EnableEffect(m_blankEffect);
+            yield return null;
+            DisableEffect(m_blankEffect);
         }
 
         private void MarkTestBegun(string testName)
