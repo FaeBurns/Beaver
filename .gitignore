@@ -22,6 +22,8 @@ mono_crash.*
 
 Assets/StreamingAssets/FFMpeg/
 .utmp/
+build_win/
+build_android
 
 # Build results
 [Dd]ebug/

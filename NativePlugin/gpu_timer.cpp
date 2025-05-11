@@ -29,6 +29,28 @@ static bool timerInUse[MAX_TIMERS] = {false};
 inline int startQueryIndex(int id) { return id * 2; }
 inline int endQueryIndex(int id) { return id * 2 + 1; }
 
+static void LogBypass(const char* msg, ...)
+{
+    if (s_UnityLog)
+    {
+        // Create a buffer to hold the formatted message
+        char buffer[1024];  // Adjust size as needed
+
+        // Start the variable argument list
+        va_list args;
+        va_start(args, msg);
+
+        // Format the message into the buffer
+        vsnprintf(buffer, sizeof(buffer), msg, args);
+
+        // End the variable argument list
+        va_end(args);
+
+        // Log the formatted message
+        UNITY_LOG(s_UnityLog, buffer);
+    }
+}
+
 static void LogUnity(const char* msg, ...)
 {
     return;
@@ -123,6 +145,8 @@ extern "C" bool UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API InitGpuTimer()
     vkGetPhysicalDeviceProperties(vkInstance.physicalDevice, &props);
     timestampPeriod = props.limits.timestampPeriod;
 
+    LogBypass("Beaver::TryInitGpuTimer timestamp period %.6f", timestampPeriod);
+
 	VkQueryPoolCreateInfo queryInfo = {};
     queryInfo.sType = VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO;
     queryInfo.queryType = VK_QUERY_TYPE_TIMESTAMP;
@@ -135,8 +159,7 @@ extern "C" bool UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API InitGpuTimer()
 		return false;
     }
 	else{
-        // use direct to bypass log disable
-        UNITY_LOG(s_UnityLog, "Beaver::TryInitGpuTimer::Successfully created query pool");
+        LogBypass("Beaver::TryInitGpuTimer::Successfully created query pool");
 	}
 	return true;
 }
