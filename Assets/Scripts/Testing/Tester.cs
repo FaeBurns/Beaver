@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -33,8 +34,8 @@ namespace Testing
 
             while (s_vkTestIds.TryDequeue(out int vkId))
             {
-                ulong nanoseconds = GpuTimer.GetElapsedNanosecondsForId(vkId);
-                s_testWriter.WriteToFile(new TestReport(GpuTimer.GetName(vkId), nanoseconds.ToString()));
+                double nanoseconds = GpuTimer.GetElapsedNanosecondsForId(vkId);
+                s_testWriter.WriteToFile(new TestReport(GpuTimer.GetName(vkId), nanoseconds.ToString(CultureInfo.InvariantCulture)));
             }
         }
 

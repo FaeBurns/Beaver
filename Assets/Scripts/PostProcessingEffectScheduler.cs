@@ -10,10 +10,18 @@ public class PostProcessingEffectScheduler : MonoBehaviour
     [SerializeField]
     private PostProcessingEffectSource[] m_sources;
 
+    private void OnRenderImage(RenderTexture source, RenderTexture destination)
+    {
+        Graphics.Blit(source, destination);
+    }
+
     public void Render(RenderTexture source, RenderTexture destination)
     {
         CommandBuffer buffer = new CommandBuffer();
         buffer.name = "PostProcessing";
+        int testOverheadMonitor = Tester.BeginTimeMonitor(buffer, "TestOverheadMonitor");
+        Tester.EndTimeMonitor(buffer, testOverheadMonitor);
+
         int globalMonitor = Tester.BeginTimeMonitor(buffer, "PostProcessingGlobalTime");
 
         Stack<RenderTexture> temporaryRenderTextures = new Stack<RenderTexture>();

@@ -20,6 +20,8 @@ static IUnityGraphicsVulkan* s_UnityVulkan = nullptr;
 static VkDevice s_Device = VK_NULL_HANDLE;
 static VkQueryPool s_QueryPool = VK_NULL_HANDLE;
 
+static float timestampPeriod;
+
 const int MAX_TIMERS = 64;
 static bool timerInUse[MAX_TIMERS] = {false};
 
@@ -109,11 +111,17 @@ extern "C" bool UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API InitGpuTimer()
     // get vulkan device
     UnityVulkanInstance vkInstance = s_UnityVulkan->Instance();
     s_Device = vkInstance.device;
+    
 	if (!s_Device)
     {
         UNITY_LOG_ERROR(s_UnityLog, "Beaver::TryInitGpuTimer Failed to get vk device");
 		return false;
     }
+
+    // get timestamp period from device info
+    VkPhysicalDeviceProperties props{};
+    vkGetPhysicalDeviceProperties(vkInstance.physicalDevice, &props);
+    timestampPeriod = props.limits.timestampPeriod;
 
 	VkQueryPoolCreateInfo queryInfo = {};
     queryInfo.sType = VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO;
@@ -187,7 +195,7 @@ extern "C" void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API EndRecordTiming(int i
     vkCmdWriteTimestamp(recordingState.commandBuffer, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, s_QueryPool, endQueryIndex(id));
 }
 
-extern "C" uint64_t UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API GetElapsedNanosecondsForId(int id)
+extern "C" double UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API GetElapsedNanosecondsForId(int id)
 {
     // silent fail if invalid
     LogUnity("Beaver::GetElapsedNanosecondsForId{%d}", id);
@@ -202,7 +210,11 @@ extern "C" uint64_t UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API GetElapsedNanosec
     vkGetQueryPoolResults(s_Device, s_QueryPool, endQueryIndex(id), 1, sizeof(uint64_t), &end, sizeof(uint64_t),
                           VK_QUERY_RESULT_64_BIT | VK_QUERY_RESULT_WAIT_BIT);
 
-    return (end > start) ? (end - start) : 0;
+    if (end <= start)
+        return 0;
+
+    double elapsedNs = (end - start) * timestampPeriod;
+    return elapsedNs;
 }
 
 extern "C" void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API OnRenderEventWithData(int eventID, void* data)

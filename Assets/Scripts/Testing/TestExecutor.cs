@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 
@@ -19,6 +20,7 @@ namespace Testing
             DisableEffect(m_colorChangeEffect);
             DisableEffect(m_fxaaEffect);
             DisableEffect(m_fakeWorkEffect);
+            DisableEffect(m_blankEffect);
 
             // wait 10 seconds to allow stream to connect - should really receive an event from something for this but aaaaaaaaaaaaa
             // add 5 to account for the 5 second wait at start - does that even need to be there anymore???
@@ -27,12 +29,14 @@ namespace Testing
             // wait frame between tests
             yield return null;
 
+            yield return BlankScreenForFrame();
             MarkTestBegun("AllOff");
             yield return WaitForCompletion();
             MarkTestEnded();
 
             yield return null;
 
+            yield return BlankScreenForFrame();
             MarkTestBegun("AAOn");
             EnableEffect(m_fxaaEffect);
             yield return WaitForCompletion();
@@ -41,6 +45,7 @@ namespace Testing
 
             yield return null;
 
+            yield return BlankScreenForFrame();
             MarkTestBegun("ColorChange");
             EnableEffect(m_colorChangeEffect);
             yield return WaitForCompletion();
@@ -49,6 +54,7 @@ namespace Testing
 
             yield return null;
 
+            yield return BlankScreenForFrame();
             yield return DoFakeWorkTest(1000);
 
             yield return null;
@@ -71,7 +77,7 @@ namespace Testing
             yield return new WaitForSeconds(m_testLengthSeconds);
         }
 
-        private IEnumerator MarkBeginning()
+        private IEnumerator BlankScreenForFrame()
         {
             EnableEffect(m_blankEffect);
             yield return null;

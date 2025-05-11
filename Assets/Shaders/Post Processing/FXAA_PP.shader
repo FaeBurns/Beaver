@@ -53,7 +53,7 @@ Shader "Hidden/FXAAPP"
             {
                 // get color of pixel and use that to calculate luminance
                 // store luminance in the alpha channel as it's needed in the next pass
-                i.uv.y = 1 - i.uv.y; // invert due to something about coordinate conversions
+                // i.uv.y = 1 - i.uv.y; // invert due to something about coordinate conversions
                 float4 col = tex2D(_MainTex, i.uv);
                 col.a = LinearRgbToLuminance(col.rgb);
                 return col;

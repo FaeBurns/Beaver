@@ -34,6 +34,12 @@ public class RenderToVrScreen : MonoBehaviour
         if (SourceTexture == null)
             return;
 
+        if (destination == null)
+        {
+            Debug.LogError("Render to screen - destination null");
+            return;
+        }
+
         // no renders have been done yet, do preprocessing on frame
         if (m_leftEyeRenderCount == 0 && m_rightEyeRenderCount == 0)
         {

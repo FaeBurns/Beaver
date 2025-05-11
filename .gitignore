@@ -21,6 +21,7 @@
 mono_crash.*
 
 Assets/StreamingAssets/FFMpeg/
+.utmp/
 
 # Build results
 [Dd]ebug/
